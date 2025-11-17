@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Título de la página actualizado con la marca Centro de Energía y Bienestar Mia -->
+    <title>CDEBMIA | CENTRO DE ENERGÍA Y BIENESTAR MIA</title>
+    <!-- Carga de Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Carga de fuentes robustas -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Carga de íconos (Font Awesome) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <style>
+        /* --- Paleta de Colores Limpia y Tecnológica --- */
+        :root {
+            --light-background: #E5E5E5; /* Gris tecnológico claro, base */
+            --dark-background: #121212;  /* Negro profundo para contraste */
+            --tech-blue: #1E90FF;        /* Azul tecnológico, confianza */
+            --premium-gold: #DAA520;     /* Dorado premium, valor */
+            --natural-teal: #008080;     /* Teal natural, bienestar */
+        }
+
+        /* Configuración de fuentes y fondo estable */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--light-background); /* Fondo base claro */
+            color: #333333; /* Texto principal oscuro sobre fondo claro */
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* Estilo para Títulos de Impacto */
+        .hero-title {
+            font-family: 'Montserrat', sans-serif;
+            text-shadow: 0 0 5px rgba(30, 144, 255, 0.5); /* Sombra sutil azul */
+            color: var(--dark-background);
+        }
+
+        /* Estilo para la Sección Oscura (Catálogo) */
+        .dark-section {
+            background-color: var(--dark-background);
+            color: #E5E5E5;
+        }
+
+        /* Estilo para Card de Producto (Minimalista) */
+        .product-card {
+            background: rgba(255, 255, 255, 0.05); /* Blanco muy sutil sobre fondo oscuro */
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(30, 144, 255, 0.2);
+        }
+        .product-image {
+            /* Sombra sutil de "tecnología" */
+            filter: drop-shadow(0 0 8px rgba(30, 144, 255, 0.3));
+        }
+
+        /* Estilo de Botón Primario (Comprar - Dorado) */
+        .cta-primary {
+            background-color: var(--premium-gold);
+            color: var(--dark-background);
+            font-weight: 800;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(218, 165, 32, 0.4);
+        }
+        .cta-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(218, 165, 32, 0.6);
+        }
+
+        /* Estilo de Botón Secundario (WhatsApp - Teal) */
+        .cta-secondary {
+            background-color: var(--natural-teal);
+            color: #FFFFFF;
+            font-weight: 800;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 128, 128, 0.4);
+        }
+        .cta-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 128, 128, 0.6);
+        }
+
+        /* Estilo para el Logo Principal Centrado */
+        .hero-logo {
+            filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.1));
+        }
+
+        /* Fix de clases personalizadas que se usan con Tailwind */
+        .text-tech-blue {
+            color: var(--tech-blue);
+        }
+        .border-tech-blue {
+            border-color: var(--tech-blue);
+        }
+    </style>
+</head>
+<body onload="initApp()">
+
+    <!-- MODAL DE DETALLE DE PRODUCTO (Oculto al inicio) -->
+    <div id="product-detail-modal" class="fixed inset-0 z-50 hidden p-4 sm:p-8 overflow-y-auto bg-black bg-opacity-80 backdrop-blur-sm transition-opacity duration-300">
+        <div class="bg-white text-gray-800 max-w-4xl mx-auto rounded-xl shadow-2xl overflow-hidden transform scale-95 transition-transform duration-300" id="modal-content-container">
+            <div class="flex justify-between items-center p-6 border-b border-gray-200 bg-gray-50">
+                <h2 class="text-3xl font-bold text-gray-800" id="modal-title">Detalle del Producto</h2>
+                <button onclick="closeModal()" class="text-gray-500 hover:text-gray-900 transition duration-200">
+                    <i class="fas fa-times text-2xl"></i>
+                </button>
+            </div>
+            <div class="p-6 md:flex md:space-x-8">
+                <div class="md:w-1/2 mb-6 md:mb-0">
+                    <img id="modal-image" src="" alt="Imagen del Producto" class="w-full h-auto rounded-lg product-image mx-auto border border-gray-200 p-2 bg-white">
+                    <p class="mt-4 text-center text-xl font-bold text-gray-600" id="modal-type"></p>
+                </div>
+                <div class="md:w-1/2">
+                    <p class="text-xl font-semibold mb-4 text-tech-blue" id="modal-benefit"></p>
+                    <p class="mb-6 text-gray-600" id="modal-description"></p>
+
+                    <h3 class="text-xl font-extrabold text-gray-800 mb-2 border-b border-gray-300 pb-1">Ingredientes Clave</h3>
+                    <ul id="modal-ingredients" class="list-disc list-inside space-y-1 text-gray-600 pl-4 mb-6"></ul>
+
+                    <h3 class="text-xl font-extrabold text-gray-800 mb-2 border-b border-gray-300 pb-1">Uso Recomendado</h3>
+                    <p class="text-gray-600 mb-6" id="modal-usage"></p>
+
+                    <h3 class="text-xl font-extrabold text-gray-800 mb-2 border-b border-gray-300 pb-1">Advertencias</h3>
+                    <p class="text-gray-600 mb-6 text-sm" id="modal-warnings"></p>
+
+                    <div class="flex items-center justify-between mt-4">
+                        <span class="text-3xl font-extrabold text-[var(--premium-gold)]" id="modal-price">$0.00</span>
+                        <button id="modal-add-to-cart" onclick="addToCartFromModal()" class="cta-primary py-3 px-6 rounded-full text-lg uppercase tracking-wider hover:opacity-90" data-product-id="">
+                            <i class="fas fa-cart-plus mr-2"></i> AGREGAR AL CARRITO
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SIDEBAR DE CARRITO (Oculto al inicio) -->
+    <div id="cart-sidebar" class="fixed top-0 right-0 h-full w-full sm:w-96 bg-gray-900 shadow-2xl z-40 transform translate-x-full transition-transform duration-500 overflow-y-auto p-6">
+        <div class="flex justify-between items-center border-b pb-4 mb-4 border-gray-700">
+            <h2 class="text-2xl font-bold text-white">
+                <i class="fas fa-shopping-cart mr-2 text-[var(--premium-gold)]"></i> TU PEDIDO
+            </h2>
+            <button onclick="toggleCart()" class="text-gray-400 hover:text-white transition duration-200">
+                <i class="fas fa-times text-2xl"></i>
+            </button>
+        </div>
+
+        <!-- Lista de Productos en Carrito -->
+        <div id="cart-items" class="space-y-4 min-h-[150px] mb-6">
+            <p id="empty-cart-message" class="text-center text-gray-500 mt-10 text-lg">Tu carrito está vacío.</p>
+        </div>
+
+        <div class="border-t border-gray-700 pt-4 space-y-3 text-white">
+            <div class="flex justify-between text-xl font-semibold">
+                <span>Subtotal:</span>
+                <span id="cart-subtotal" class="text-tech-blue">$0.00</span>
+            </div>
+            <div class="flex justify-between text-lg text-gray-400">
+                <span>Envío Estimado:</span>
+                <span id="cart-shipping">$8.00</span>
+            </div>
+            <div class="flex justify-between text-3xl font-extrabold border-t border-gray-700 pt-3">
+                <span>TOTAL:</span>
+                <span id="cart-total" class="text-[var(--premium-gold)]">$8.00</span>
+            </div>
+        </div>
+
+        <div class="mt-8 space-y-4">
+            <button class="w-full cta-primary py-3 rounded-lg text-lg uppercase tracking-wider hover:opacity-90">
+                <i class="fas fa-credit-card mr-2"></i> CONTINUAR AL PAGO
+            </button>
+            <button class="w-full cta-secondary py-3 rounded-lg text-lg uppercase tracking-wider hover:opacity-90" onclick="confirmWhatsappOrder()">
+                <i class="fab fa-whatsapp mr-2"></i> CONFIRMAR POR WHATSAPP
+            </button>
+            <p class="text-xs text-center text-gray-500 mt-3">¡Envíos nacionales e internacionales disponibles!</p>
+        </div>
+    </div>
+
+
+    <!-- HEADER (Barra de navegación fija) -->
+    <header class="sticky top-0 z-30 w-full bg-[#F0F0F0] shadow-md">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <!-- LOGO CDEBMIA (Izquierda) -->
+            <a href="#hero" class="flex items-center space-x-2">
+                <img src="https://i.postimg.cc/mDLLvhy3/IMG-0244.png" alt="Logo CDEBMIA" class="h-10 w-auto">
+            </a>
+
+            <!-- Botón de Carrito -->
+            <button onclick="toggleCart()" class="text-gray-800 hover:text-[var(--premium-gold)] transition duration-200 relative">
+                <i class="fas fa-shopping-cart text-2xl"></i>
+                <span id="cart-count" class="absolute -top-1 -right-1 bg-red-600 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center opacity-0 transition-opacity duration-300">0</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- 1. HERO PRINCIPAL (Impacto Visual y Slogan) -->
+    <section id="hero" class="bg-[var(--light-background)] pt-12 pb-16 text-center border-b border-gray-300">
+        <div class="container mx-auto px-4">
+            <!-- Logo Grande y Centrado -->
+            <img src="https://i.postimg.cc/mDLLvhy3/IMG-0244.png" alt="Logo CDEBMIA Energía" class="hero-logo mx-auto h-40 sm:h-64 object-contain max-w-full mb-8">
+
+            <h1 class="hero-title text-3xl sm:text-5xl lg:text-6xl font-extrabold uppercase mb-3">
+                CENTRO DE ENERGÍA Y BIENESTAR MIA
+            </h1>
+            <p class="text-xl sm:text-2xl font-semibold mb-8 text-gray-600">
+                CONECTA TU MENTE, TU CUERPO Y TU ENERGÍA
+            </p>
+
+            <!-- CTA principal dual -->
+            <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-6">
+                <a href="#products" class="cta-primary py-3 px-10 rounded-lg text-lg uppercase tracking-wider">
+                    <i class="fas fa-bolt mr-2"></i> VER CATÁLOGO Y PRECIOS
+                </a>
+                <button class="cta-secondary py-3 px-10 rounded-lg text-lg uppercase tracking-wider" onclick="confirmWhatsappOrder(true)">
+                    <i class="fab fa-whatsapp mr-2"></i> PEDIR POR WHATSAPP
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- 2. SECCIÓN SOBRE NOSOTROS -->
+    <section id="about" class="bg-gray-100 py-16">
+        <div class="container mx-auto px-4 max-w-4xl text-center">
+            <h2 class="text-3xl font-bold mb-6 text-[var(--tech-blue)] uppercase tracking-wider border-b-2 border-tech-blue pb-2 inline-block">
+                NUESTRO COMPROMISO
+            </h2>
+            <p class="text-lg text-gray-700 mb-6">
+                Nos dedicamos al equilibrio energético y al bienestar integral, integrando <strong>tecnología japonesa de vanguardia</strong> que aumenta la energía, mejora la vitalidad y alivia dolores mediante dispositivos inteligentes y fáciles de usar.
+            </p>
+            <p class="text-lg text-gray-700 font-semibold">
+                Complementamos esta experiencia con productos diseñados para <strong>elevar tu calidad de vida</strong> y, además, brindamos una oportunidad de negocio rentable para quienes desean crecer y transformar su futuro.
+            </p>
+        </div>
+    </section>
+
+    <!-- 3. CATÁLOGO DE PRODUCTOS -->
+    <section id="products" class="dark-section py-20">
+        <div class="container mx-auto px-4">
+            <h2 class="text-4xl font-extrabold text-center mb-12 text-white">
+                ELIGE TU PRÓXIMO <span class="text-[var(--premium-gold)]">UPGRADE</span> DE BIENESTAR
+            </h2>
+            <div id="product-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Las cards se cargan dinámicamente con JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. SECCIÓN POR QUÉ ELEGIRNOS -->
+    <section id="why-us" class="bg-[var(--light-background)] py-16">
+        <div class="container mx-auto px-4 max-w-5xl">
+            <h2 class="text-3xl font-bold text-center mb-10 text-[var(--dark-background)] uppercase">
+                ¿POR QUÉ CONFIAR EN CDEBMIA?
+            </h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+                <div class="p-4 bg-white rounded-xl shadow-lg border-t-4 border-[var(--tech-blue)]">
+                    <i class="fas fa-flask text-4xl mb-3 text-[var(--tech-blue)]"></i>
+                    <h3 class="font-bold text-lg mb-1">FÓRMULAS POTENTES</h3>
+                    <p class="text-sm text-gray-600">Resultados visibles, ciencia y naturaleza.</p>
+                </div>
+                <div class="p-4 bg-white rounded-xl shadow-lg border-t-4 border-[var(--premium-gold)]">
+                    <i class="fas fa-shield-alt text-4xl mb-3 text-[var(--premium-gold)]"></i>
+                    <h3 class="font-bold text-lg mb-1">CALIDAD PREMIUM</h3>
+                    <p class="text-sm text-gray-600">Certificaciones visibles, máxima confianza.</p>
+                </div>
+                <div class="p-4 bg-white rounded-xl shadow-lg border-t-4 border-[var(--natural-teal)]">
+                    <i class="fas fa-shipping-fast text-4xl mb-3 text-[var(--natural-teal)]"></i>
+                    <h3 class="font-bold text-lg mb-1">ENVÍOS RÁPIDOS</h3>
+                    <p class="text-sm text-gray-600">Recibe tu energía donde estés.</p>
+                </div>
+                <div class="p-4 bg-white rounded-xl shadow-lg border-t-4 border-gray-500">
+                    <i class="fas fa-hand-holding-heart text-4xl mb-3 text-gray-500"></i>
+                    <h3 class="font-bold text-lg mb-1">GARANTÍA TOTAL</h3>
+                    <p class="text-sm text-gray-600">Satisfacción y soporte al cliente.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5. SECCIÓN FINAL – CTA GRANDE -->
+    <section id="final-cta" class="dark-section py-16 text-center">
+        <div class="container mx-auto px-4 max-w-3xl">
+            <h2 class="text-4xl font-extrabold mb-6 text-white">
+                ¿LISTO PARA TRANSFORMAR TU ENERGÍA?
+            </h2>
+            <p class="text-xl text-gray-300 mb-10">
+                No esperes más para experimentar el equilibrio y la vitalidad que mereces.
+            </p>
+
+            <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-6">
+                <a href="#products" class="cta-primary py-3 px-8 rounded-lg text-lg uppercase tracking-wider">
+                    <i class="fas fa-tags mr-2"></i> COMPRAR AHORA
+                </a>
+                <button class="cta-secondary py-3 px-8 rounded-lg text-lg uppercase tracking-wider" onclick="confirmWhatsappOrder(true)">
+                    <i class="fab fa-whatsapp mr-2"></i> WHATSAPP AYUDA
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-gray-800 text-gray-300 py-12">
+        <div class="container mx-auto px-4 text-center">
+            <div class="mb-6">
+                <img src="https://i.postimg.cc/mDLLvhy3/IMG-0244.png" alt="Logo CDEBMIA" class="h-12 w-auto mx-auto mb-4">
+                <p class="text-sm">Centro de Energía y Bienestar Mia</p>
+                <p class="text-xs">Conecta tu mente, tu cuerpo y tu energía</p>
+            </div>
+
+            <div class="mb-6 text-sm">
+                <h4 class="font-bold mb-2 text-white">CONTACTO Y UBICACIÓN</h4>
+                <p><i class="fas fa-phone-alt text-[var(--natural-teal)] mr-2"></i> Teléfonos: 0960226638 / 098 217 1548</p>
+                <p><i class="fas fa-map-marker-alt text-[var(--natural-teal)] mr-2"></i> Barrio San Francisco de Asís, calle Orellana 11 de Julio y Shuaras.</p>
+                <p><i class="fab fa-whatsapp text-[var(--natural-teal)] mr-2"></i> WhatsApp principal: +593 98 217 1548</p>
+            </div>
+
+            <p class="text-xs border-t border-gray-700 pt-6">
+                © 2025 CDEBMIA. Todos los derechos reservados.
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        const WHATSAPP_PHONE = '593982171548'; 
+
+        const productsData = {
+            pc_silver: {
+                id: 'pc_silver',
+                name: 'MAXPRO P-C Plata Coloidal',
+                subtitle: 'Plata - Oro - Cobre (100ml)',
+                price: 32.00,
+                image: 'https://i.postimg.cc/rDc32D0v/00717385-9a63-4c5a-ad17-5701cbf46d21.jpg',
+                type: 'Homeopático / Gotas Vía Oral',
+                benefit: 'Apoyo Inmunológico Superior y Equilibrio Natural.',
+                description: 'Fórmula homeopática tradicional concentrada que combina Plata, Oro y Cobre. Actúa como un purificador natural, ofreciendo un potente apoyo al sistema de defensas y favoreciendo el balance energético celular.',
+                ingredients: ['Plata Coloidal', 'Oro Coloidal', 'Cobre Coloidal', 'Vehículo Purificado'],
+                usage: 'Tomar 10-15 gotas sublinguales 3 veces al día o según indicación profesional. Mantener bajo la lengua por 30 segundos.',
+                warnings: 'Uso tradicional homeopático. No exceder la dosis recomendada. Consulte a su médico antes de usar si está embarazada o lactando.',
+            },
+            oxcell: {
+                id: 'oxcell',
+                name: 'MAXPRO PRO OXCELL',
+                subtitle: 'Oxigen Cell (50ml)',
+                price: 32.00,
+                image: 'https://i.postimg.cc/zy56YyH5/ae9e76a0-415c-4949-a59e-8669f56476d8.jpg',
+                type: 'Bio Drenante Nutracéutico / Gotas',
+                benefit: 'Detoxificación Celular y Oxigenación Cerebral.',
+                description: 'Fórmula diseñada para el drenaje natural. Sus componentes apoyan la función hepática, ayudan a desinflamar y proporcionan una oleada de energía. Ideal para depurar tu sistema de forma progresiva.',
+                ingredients: ['Cúrcuma (Curcumina Longal)', 'Moringa Oleifera', 'Piper Nigrum (Pimienta Negra)'],
+                usage: 'Tomar 15 gotas disueltas en un vaso de agua por la mañana y por la noche.',
+                warnings: 'Suplemento nutricional. No apto para personas con obstrucción biliar. Mantener fuera del alcance de los niños.',
+            },
+            dhp: {
+                id: 'dhp',
+                name: 'MAXPRO PRO DHP',
+                subtitle: 'Drenador Hepático Protector (50ml)',
+                price: 32.00,
+                image: 'https://i.postimg.cc/CRYXpRnh/7ff9797a-b2fa-4f49-8c5a-c3c3ba106965.jpg',
+                type: 'Bio Drenante Nutracéutico / Gotas',
+                benefit: 'Limpieza Interna Profunda y Aumento de Vitalidad.',
+                description: 'Concentrado de hierbas que promueve la limpieza interna, ayudando al hígado a procesar toxinas y mejorando el flujo biliar. Siente la diferencia con mayor energía diaria y un balance natural en tu cuerpo.',
+                ingredients: ['Moringa', 'Extractos Aromáticos', 'Hierbas Detox Especiales'],
+                usage: 'Tomar 15-20 gotas 2 veces al día antes de las comidas principales.',
+                warnings: 'No recomendado para niños pequeños. Si padece de condiciones médicas preexistentes, consulte a su médico.',
+            },
+            pro_cell: {
+                id: 'pro_cell',
+                name: 'MAXPRO PRO CELL',
+                subtitle: 'Protector Inmunológico Celular (50ml)',
+                price: 32.00,
+                image: 'https://i.postimg.cc/PCh9nCvt/b0fd9156-4f27-49d4-8f8f-387b8817c5a4.jpg',
+                type: 'Nutracéutico / Gotas',
+                benefit: 'Defensa Celular Activa y Fortalecimiento Inmunológico.',
+                description: 'Potente fórmula diseñada para proteger las células del estrés oxidativo y fortalecer las defensas naturales del cuerpo. Ideal para épocas de alta exigencia o cambios estacionales.',
+                ingredients: ['Antioxidantes de Alta Potencia', 'Extractos de Plantas Inmunomoduladoras'],
+                usage: 'Tomar 15 gotas en ayunas para la máxima absorción.',
+                warnings: 'Consultar si toma anticoagulantes.',
+            },
+            esplendor: {
+                id: 'esplendor',
+                name: 'WINNER WORLD – ESPLENDOR',
+                subtitle: 'Lágrimas Humectantes Homeopáticas (15ml)',
+                price: 32.00,
+                image: 'https://i.postimg.cc/5X1TWXQW/e23f5a6c-80de-43ee-aee2-a1a79c8fc1b3.jpg',
+                type: 'Alivio Visual / Gotas Oftálmicas',
+                benefit: 'Hidratación Progresiva para Aliviar la Fatiga Visual.',
+                description: 'Gotas oftálmicas homeopáticas diseñadas para combatir la resequedad y la fatiga ocular causada por pantallas. Proporciona alivio visual inmediato y una sensación de frescura duradera.',
+                ingredients: ['Solución Salina', 'Extractos Homeopáticos Seleccionados'],
+                usage: 'Aplicar 1-2 gotas en cada ojo hasta 4 veces al día o según necesidad. No tocar el ojo con el gotero.',
+                warnings: 'Producto de uso personal. Si el enrojecimiento persiste, suspender y consultar a un especialista.',
+            },
+            faja_winner: {
+                id: 'faja_winner',
+                name: 'FAJA WINNER WORLD',
+                subtitle: 'Chaleco Látex o Cinturilla - ¡Precio a Consultar!',
+                price: 0.00,
+                image: 'https://i.postimg.cc/WdjCcdFC/279708fb-a099-4e05-ac21-2ab0bedfec16.jpg',
+                type: 'Moldeado Corporal / Látex de Alta Compresión',
+                benefit: 'Define Cintura, Mejora Postura y Realza tu Figura.',
+                description: 'Faja de látex de alta compresión (Chaleco o Cinturilla) para resultados inmediatos. Ayuda a moldear la silueta, comprimir el abdomen y brinda un soporte excelente para la postura. La herramienta ideal para tu rutina.',
+                ingredients: ['Látex de Alta Calidad', 'Algodón Interno', 'Varillas Flexibles'],
+                usage: 'Usar diariamente por periodos de 4 a 8 horas. No usar para dormir. Lavar a mano.',
+                warnings: 'Seleccionar la talla correcta para evitar molestias. No usar sobre heridas abiertas o piel irritada.',
+                is_contact_only: true
+            }
+        };
+
+        let cart = JSON.parse(localStorage.getItem('cdebmia_cart')) || {};
+
+        function initApp() {
+            renderProductCards();
+            updateCartDisplay();
+        }
+
+        function saveCart() {
+            localStorage.setItem('cdebmia_cart', JSON.stringify(cart));
+        }
+
+        function toggleCart() {
+            const sidebar = document.getElementById('cart-sidebar');
+            if (sidebar.classList.contains('translate-x-full')) {
+                sidebar.classList.remove('translate-x-full');
+            } else {
+                sidebar.classList.add('translate-x-full');
+            }
+        }
+
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('es-EC', { style: 'currency', currency: 'USD' }).format(amount);
+        }
+
+        function renderProductCards() {
+            const container = document.getElementById('product-list');
+            container.innerHTML = '';
+
+            Object.values(productsData).forEach(product => {
+                const isContactOnly = product.is_contact_only && product.price === 0.00;
+                const priceDisplay = isContactOnly
+                    ? `<span class="text-xl font-bold text-[var(--natural-teal)]">¡PRECIO A CONSULTAR!</span>`
+                    : `<span class="text-3xl font-extrabold text-[var(--premium-gold)]">${formatCurrency(product.price)}</span>`;
+
+                const buttons = isContactOnly
+                    ? `<button onclick="confirmWhatsappOrder(true, '${product.name}')" class="cta-secondary w-full py-2.5 rounded-full text-sm uppercase tracking-wider">
+                           <i class="fab fa-whatsapp mr-2"></i> CONSULTAR PRECIO
+                       </button>`
+                    : `<div class="flex space-x-2">
+                           <button onclick="addToCart('${product.id}')" class="cta-primary flex-grow py-2.5 rounded-full text-sm uppercase tracking-wider hover:opacity-90">
+                               <i class="fas fa-cart-plus mr-2"></i> AGREGAR
+                           </button>
+                           <button onclick="openModal('${product.id}')" class="bg-gray-700 text-white py-2.5 px-4 rounded-full text-sm hover:bg-gray-600 transition">
+                               <i class="fas fa-eye"></i>
+                           </button>
+                       </div>`;
+
+                const card = `
+                    <div class="product-card rounded-2xl p-6 flex flex-col items-center text-center">
+                        <img src="${product.image}" alt="${product.name}" class="product-image h-48 w-auto object-contain mb-4">
+                        <h3 class="text-xl font-bold text-white mb-1">${product.name}</h3>
+                        <p class="text-sm text-gray-400 mb-4">${product.subtitle}</p>
+                        <div class="mt-auto w-full">
+                            <div class="mb-4">${priceDisplay}</div>
+                            ${buttons}
+                        </div>
+                    </div>
+                `;
+                container.innerHTML += card;
+            });
+        }
+
+        function addToCart(productId, quantity = 1) {
+            const product = productsData[productId];
+            if (!product) return;
+
+            if (product.is_contact_only) {
+                confirmWhatsappOrder(true, product.name);
+                return;
+            }
+
+            if (cart[productId]) {
+                cart[productId].quantity += quantity;
+            } else {
+                cart[productId] = { ...product, quantity };
+            }
+
+            saveCart();
+            updateCartDisplay();
+            toggleCart();
+            console.log(`¡${product.name} agregado al carrito!`);
+        }
+
+        function updateQuantity(productId, delta) {
+            if (cart[productId]) {
+                cart[productId].quantity += delta;
+                if (cart[productId].quantity <= 0) {
+                    delete cart[productId];
+                }
+                saveCart();
+                updateCartDisplay();
+            }
+        }
+
+        function updateCartDisplay() {
+            const itemsContainer = document.getElementById('cart-items');
+            const subtotalEl = document.getElementById('cart-subtotal');
+            const totalEl = document.getElementById('cart-total');
+            const countEl = document.getElementById('cart-count');
+            const emptyMessage = document.getElementById('empty-cart-message');
+
+            let subtotal = 0;
+            let totalItems = 0;
+            const shipping = 8.00;
+
+            itemsContainer.innerHTML = '';
+
+            const cartItemsArray = Object.values(cart);
+
+            if (cartItemsArray.length === 0) {
+                emptyMessage.style.display = 'block';
+                countEl.classList.add('opacity-0');
+                subtotalEl.textContent = formatCurrency(0);
+                totalEl.textContent = formatCurrency(shipping);
+                return;
+            } else {
+                emptyMessage.style.display = 'none';
+                countEl.classList.remove('opacity-0');
+            }
+
+            cartItemsArray.forEach(item => {
+                const itemTotal = item.price * item.quantity;
+                subtotal += itemTotal;
+                totalItems += item.quantity;
+
+                const itemHtml = `
+                    <div class="flex items-center space-x-3 p-3 bg-gray-800 rounded-lg">
+                        <img src="${item.image}" alt="${item.name}" class="w-16 h-16 object-contain rounded-md border border-gray-700">
+                        <div class="flex-grow">
+                            <h4 class="text-base font-semibold text-white">${item.name}</h4>
+                            <p class="text-sm text-gray-400">${formatCurrency(item.price)} c/u</p>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <button onclick="updateQuantity('${item.id}', -1)" class="bg-red-600 hover:bg-red-700 text-white w-6 h-6 rounded-full text-xs">-</button>
+                            <span class="text-white font-bold">${item.quantity}</span>
+                            <button onclick="updateQuantity('${item.id}', 1)" class="bg-green-600 hover:bg-green-700 text-white w-6 h-6 rounded-full text-xs">+</button>
+                        </div>
+                    </div>
+                `;
+                itemsContainer.innerHTML += itemHtml;
+            });
+
+            const finalTotal = subtotal + shipping;
+            subtotalEl.textContent = formatCurrency(subtotal);
+            totalEl.textContent = formatCurrency(finalTotal);
+            countEl.textContent = totalItems;
+        }
+
+        function openModal(productId) {
+            const product = productsData[productId];
+            if (!product) return;
+
+            const modal = document.getElementById('product-detail-modal');
+            document.getElementById('modal-title').textContent = product.name;
+            document.getElementById('modal-image').src = product.image;
+            document.getElementById('modal-type').textContent = product.type;
+            document.getElementById('modal-benefit').textContent = product.benefit;
+            document.getElementById('modal-description').textContent = product.description;
+            document.getElementById('modal-price').textContent = formatCurrency(product.price);
+
+            const modalBtn = document.getElementById('modal-add-to-cart');
+            modalBtn.setAttribute('data-product-id', product.id);
+
+            const ingredientsList = document.getElementById('modal-ingredients');
+            ingredientsList.innerHTML = product.ingredients
+                .map(ing => `<li class="text-gray-600">${ing}</li>`)
+                .join('');
+            document.getElementById('modal-usage').textContent = product.usage;
+            document.getElementById('modal-warnings').textContent = product.warnings;
+
+            modal.classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('product-detail-modal').classList.add('hidden');
+        }
+
+        function addToCartFromModal() {
+            const button = document.getElementById('modal-add-to-cart');
+            const productId = button.getAttribute('data-product-id');
+            if (productId) {
+                addToCart(productId);
+                closeModal();
+            }
+        }
+
+        function confirmWhatsappOrder(isDirectCta = false, productConsulted = null) {
+            let message = '';
+            
+            if (isDirectCta) {
+                if (productConsulted) {
+                    message = `¡Hola! Me interesa saber el precio y las opciones de compra de ${productConsulted}.`;
+                } else {
+                    message = '¡Hola! Me gustaría iniciar mi pedido de productos CDEBMIA. ¿Me pueden ayudar con el catálogo y el envío?';
+                }
+            } else {
+                const total = document.getElementById('cart-total').textContent;
+                const items = Object.values(cart).map(item => ` - ${item.name} x${item.quantity}`).join('\\n');
+                
+                if (Object.keys(cart).length === 0) {
+                    message = '¡Hola! Me gustaría hacer un pedido pero mi carrito está vacío. ¿Me pueden ayudar a elegir?';
+                } else {
+                    message = `¡Hola! Me gustaría confirmar mi pedido y realizar el pago. Este es el detalle:\\n\\n*Pedido CDEBMIA:*\\n${items}\\n\\n*Total estimado (incl. envío):* ${total}\\n\\nPor favor, envíenme los pasos para finalizar la compra y el envío. ¡Gracias!`;
+                }
+            }
+
+            const whatsappUrl = `https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(message)}`;
+            console.log("Intentando abrir WhatsApp con URL:", whatsappUrl);
+
+            try {
+                const newWindow = window.open(whatsappUrl, '_blank');
+                if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
+                    console.error("WhatsApp no pudo abrirse automáticamente. Posiblemente un bloqueador de pop-ups.");
+                }
+            } catch (error) {
+                console.error("Error al intentar abrir WhatsApp:", error);
+            }
+        }
+    </script>
+</body>
+</html>
